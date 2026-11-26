@@ -1,0 +1,152 @@
+**SCRIPT HEADER (INDEX 0 - WRITER AND WORKFLOW METADATA)**
+
+**WORKFLOW SPECIFICATION**
+This is a production script for generating sequential cinematic video in ComfyUI using MiniMax H3 (Hailuo 03) Ref2VA (Reference-to-Video-and-Audio). Each segment is processed as an isolated, stateless generation pass where reference images, motion reference videos, and voice audio samples are dynamically selected and routed to output slots based on default switches and per-segment overrides.
+
+**CHARACTERS**
+
+* **Jonathan (`<character_1>`):** A weathered Caucasian man in his late 40s with a salt-and-pepper beard, tired hazel eyes, and rough features. In this scene, he wears a heavy olive-drab wool winter coat with dark horn buttons over a charcoal knit turtleneck sweater and dark work trousers.
+
+**ENVIRONMENTS**
+
+* **Mountain Cabin Exterior (`<environment_1>`):** A rugged, weathered log cabin with a raised timber porch, rough-hewn pine railings, and snow-dusted roof beams, surrounded by tall subalpine pine trees during cold blue twilight.
+* **Cabin Foyer and Hearth (`<environment_2>`):** A cozy, rustic cabin interior featuring rough stone flooring, exposed timber walls, a large cobblestone fireplace hearth with dying glowing embers, and a brass-latched solid timber door.
+
+**REFERENCE ASSET REGISTRY**
+Declare all available media assets below with their alias, file path, and default on/off switch (`true`/`false` or `1`/`0`). Active references are assigned sequentially to output slots (`ref_image_1` through `ref_image_9`, `ref_video_1` through `ref_video_3`, `ref_audio_1` through `ref_audio_3`) starting with active defaults, followed by segment-activated assets.
+
+[IMAGE_REFERENCES]
+Jonathan_Portrait   | path = "input/references/jonathan_neutral.png"    | default = true
+Jonathan_Coat       | path = "input/references/olive_wool_coat.png"     | default = 1
+Cabin_Exterior      | path = "input/references/cabin_exterior_dusk.png" | default = true
+Cabin_Foyer         | path = "input/references/cabin_foyer_hearth.png"  | default = false
+Brass_Latch_Closeup | path = "input/references/brass_door_latch.png"   | default = 0
+Hearth_Embers       | path = "input/references/glowing_embers_macro.png"| default = false
+Fire_Poker_Macro    | path = "input/references/iron_fire_poker.png"     | default = 0
+Jonathan_Boots      | path = "input/references/heavy_leather_boots.png" | default = 0
+Snowy_Pine_Forest   | path = "input/references/pine_trees_snow.png"     | default = false
+Cabin_Window_Dusk   | path = "input/references/cabin_window_amber.png"  | default = 0
+
+[VIDEO_REFERENCES]
+Step_Climb_Cam      | path = "input/references/step_climb_motion.mp4"   | default = 1
+Door_Glide_Cam      | path = "input/references/door_glide_motion.mp4"   | default = 0
+Crane_Tilt_Cam      | path = "input/references/crane_down_motion.mp4"   | default = false
+
+[AUDIO_REFERENCES]
+Jonathan_Gravelly   | path = "input/references/male_gravelly_voice.wav"  | default = true
+Cabin_Room_Tone     | path = "input/references/cabin_creak_ambience.wav"| default = 0
+Acoustic_Guitar_Cue | path = "input/references/acoustic_decay_cue.wav"  | default = false
+
+**NARRATIVE BACKGROUND**
+After a punishing trek across a freezing alpine ridge, Jonathan finally reaches the remote shelter where a contact was supposed to meet him. Exhausted and wary of what awaits inside, he checks the perimeter, enters the dark cabin, and tends to the fading hearth fires to confirm whether anyone has recently abandoned the outpost.
+
+**SCRIPT AND SEGMENT FORMATTING RULES**
+
+1. **The Hash Symbol Rule:** The hash symbol is the strict segment delimiter for ComfyUI script loaders and parsers. It may appear ONLY at the very start of each new segment header line and nowhere else in this entire document (all markdown headers use asterisks `**`). Everything preceding the first segment tag is Index 0 metadata and ignored during generation.
+2. **Segment Header Syntax:** Every segment must begin on a new line with the exact uppercase word SEGMENT preceded immediately by the hash symbol, followed by the segment number, duration in parentheses, a colon, and a title. Format: `SEGMENT <number> (<duration>s): <Title>`. The duration defines the generation length in seconds, which is snapped to native MiniMax H3 frame counts (17k + 5 frames at 24fps).
+3. **Switchable Reference Blocks:** Right beneath each segment header line, an optional `[REFERENCES]` block defines per-segment on/off switches (`Alias: 1` or `Alias: 0`, `Alias: true` or `Alias: false`). Active default references occupy the initial slots in order, and newly activated references append to the next available slots in the order toggled. Switched-off references are removed.
+4. **Stateless 6-Section Prompt Format:** Each segment prompt must be self-contained and follow the official 6-section schema in exact order: `subject_definitions:`, `summary:`, `retention_analysis:`, `detailed_description:`, `overall_soundscape:`, and `non_diegetic_music:`.
+5. **Reference Isolation:** Character and wardrobe traits must be re-bound in each segment using explicit retention keywords (`fully_preserved`, `partially_preserved`, `attribute_transfer`, `reference`), and prop/garment reference photos must include `(never a video frame)`.
+
+---
+
+#SEGMENT 1 (8s): Arrival at the Cabin
+[REFERENCES]
+Brass_Latch_Closeup: 1
+
+subject_definitions:
+<Subject 1> is the weathered log cabin with a wooden porch shown in <Picture 3>.
+<Subject 2> is the bearded man in his 40s from <Picture 1>, wearing the olive wool coat from <Picture 2>.
+<Subject 3> is the heavy brass door latch shown in <Picture 4>.
+<Video 1> is a handheld tracking clip of a person climbing outdoor steps.
+<Audio 1> is a low, gravelly male voice recording.
+
+summary:
+[reference generation + audio reference] Outside <Subject 1>, <Subject 2> walks onto the porch following the camera motion of <Video 1> and speaks with the vocal timbre of <Audio 1>.
+
+retention_analysis:
+<Subject 1>: partially_preserved - retain cabin logs and porch layout from <Picture 3>; shift daylight to dusk.
+<Subject 2>: fully_preserved - lock facial features from <Picture 1> and wool coat from <Picture 2>.
+<Picture 2> (never a video frame): attribute_transfer - transfer coat fabric and cut only.
+<Subject 3> (never a video frame): fully_preserved - retain brass latch shape from <Picture 4>.
+<Video 1>: attribute_transfer - transfer camera path and walking cadence only; ignore original actor and street background.
+<Audio 1>: reference - match vocal timbre only; do not copy original spoken words.
+
+detailed_description:
+Live-action, 35mm lens, cold blue twilight with warm porch lantern light. [Shot 1] A medium shot opens on <Subject 1>. <Subject 2> (S1) climbs the wooden steps, exhales a visible plume of white vapor into the freezing air, and rests a gloved hand on the timber railing, matching the climbing cadence from <Video 1>. The camera tracks backward at chest height with small amplitude at slow speed. At 00:02.500, <Subject 2> (S1) looks toward the cabin door and says: "[English] The fire is still burning." [Shot 2] At 00:05.500, the camera cuts to a close-up of <Subject 2> reaching for <Subject 3>, holding a focused, calm expression until 00:07.000.
+
+overall_soundscape:
+Heavy leather boots thudding on hollow wooden steps, thick wool coat rustling in the breeze, cold wind whistling through subalpine pine branches, a crisp metallic latch click, and clear close-mic speech for (S1).
+
+non_diegetic_music:
+A single sustained low cello note enters softly at 00:05.500 on the cut to close-up, mixed restrained beneath the ambient wind.
+
+#SEGMENT 2 (10s): Unlocking the Front Door
+[REFERENCES]
+Cabin_Exterior: 0
+Cabin_Foyer: 1
+Step_Climb_Cam: 0
+Door_Glide_Cam: 1
+
+subject_definitions:
+<Subject 1> is the rustic cabin foyer and doorway shown in <Picture 3>.
+<Subject 2> is the bearded man in his 40s from <Picture 1>, wearing the olive wool coat from <Picture 2>.
+<Video 1> is a smooth forward tracking shot gliding through an opening doorway.
+<Audio 1> is a low, gravelly male voice recording.
+
+summary:
+[reference generation + audio reference] In <Subject 1>, <Subject 2> unlocks and opens the heavy timber door following the camera movement of <Video 1> and speaks with the vocal timbre of <Audio 1>.
+
+retention_analysis:
+<Subject 1>: fully_preserved - lock timber wall textures and stone floor layout from <Picture 3>.
+<Subject 2>: fully_preserved - lock facial identity from <Picture 1> and wardrobe silhouette from <Picture 2>.
+<Picture 2> (never a video frame): attribute_transfer - transfer olive wool texture and horn button details only.
+<Video 1>: attribute_transfer - transfer doorway tracking trajectory and speed only; ignore original environment.
+<Audio 1>: reference - preserve gravelly vocal timbre and natural resonance; do not replicate source words.
+
+detailed_description:
+Live-action, 35mm anamorphic lens, deep dusk shadow outside with warm amber light spilling from within. [Shot 1] A medium-wide shot opens inside <Subject 1> looking toward the solid timber door. The heavy door unlatches and swings slowly inward as <Subject 2> (S1) steps across the threshold, cold mist billowing around his boots, mirroring the forward tracking momentum of <Video 1>. The camera tracks forward at eye level with moderate amplitude at slow speed. At 00:03.500, <Subject 2> (S1) pauses in the doorway, casts his eyes across the empty foyer, and calls out: "[English] Anyone still here?" [Shot 2] At 00:07.000, the camera cuts to a medium over-the-shoulder shot framing <Subject 2> as he pushes the door shut behind him, pausing motion until 00:09.000.
+
+overall_soundscape:
+Heavy wooden door creaking slowly open on iron hinges, damp boots scuffing over rough stone flooring, faint wind dying down as the door shuts, a muffled latch engagement, and resonant indoor speech for (S1).
+
+non_diegetic_music:
+A quiet, bowed double-bass drone swells gently at 00:03.500 underneath the spoken dialogue, holding a low tense tone until the clip finishes.
+
+#SEGMENT 3 (8s): Rekindling the Hearth
+[REFERENCES]
+Cabin_Exterior: 0
+Cabin_Foyer: 1
+Hearth_Embers: 1
+Fire_Poker_Macro: 1
+Step_Climb_Cam: 0
+Crane_Tilt_Cam: 1
+
+subject_definitions:
+<Subject 1> is the stone fireplace hearth shown in <Picture 3>.
+<Subject 2> is the bearded man in his 40s from <Picture 1>, wearing the olive wool coat from <Picture 2>.
+<Subject 3> is the glowing ember bed shown in <Picture 4>.
+<Subject 4> is the blackened iron fire poker shown in <Picture 5>.
+<Video 1> is a slow downward crane shot moving toward a low hearth.
+<Audio 1> is a low, gravelly male voice recording.
+
+summary:
+[reference generation + audio reference] At <Subject 1>, <Subject 2> kneels beside the stone hearth following the camera arc of <Video 1> and speaks with the vocal timbre of <Audio 1>.
+
+retention_analysis:
+<Subject 1>: fully_preserved - lock cobblestone fireplace shape, iron grate, and hearth dimensions from <Picture 3>.
+<Subject 2>: fully_preserved - preserve facial identity from <Picture 1> and olive coat appearance from <Picture 2>.
+<Picture 2> (never a video frame): attribute_transfer - transfer fabric drape and coat texture only.
+<Subject 3> (never a video frame): fully_preserved - retain glowing ember texture and heat coloration from <Picture 4>.
+<Subject 4> (never a video frame): fully_preserved - lock forged iron poker geometry from <Picture 5>.
+<Video 1>: attribute_transfer - transfer downward crane angle and smooth deceleration; ignore source subjects.
+<Audio 1>: reference - match low vocal timbre and close acoustic dryness; do not copy original speech.
+
+detailed_description:
+Live-action, 50mm prime lens, moody firelight illumination with soft golden rim light across stone masonry. [Shot 1] A medium shot opens on <Subject 1>. <Subject 2> (S1) walks forward into the warm light, drops to one knee beside the hearth, and picks up <Subject 4>, matching the descent timing from <Video 1>. The camera tilts downward with small amplitude at slow speed. At 00:02.000, <Subject 2> (S1) stirs <Subject 3>, sending a shower of faint orange sparks into the chimney flue, and murmurs quietly: "[English] We have time." [Shot 2] At 00:05.500, the camera cuts to a close profile shot of <Subject 2> watching the rising flame, amber glow flickering across his bearded face, holding a steady gaze until 00:07.000.
+
+overall_soundscape:
+Hearth embers softly hissing and crackling, iron poker clinking against cobblestone masonry, heavy wool coat shifting as knees touch stone, and intimate close-mic spoken dialogue for (S1).
+
+non_diegetic_music:
+A sparse, delicate acoustic guitar chord rings out softly at 00:05.500, lingering into warm natural decay until the clip ends.
